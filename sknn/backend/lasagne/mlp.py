@@ -246,10 +246,18 @@ class MultiLayerPerceptronBackend(BaseBackend):
 
         if self.valid_size > 0.0:
             assert self.valid_set is None, "Can't specify valid_size and valid_set together."
-            X, X_v, y, y_v = sklearn.cross_validation.train_test_split(
-                                X, y,
-                                test_size=self.valid_size,
-                                random_state=self.random_state)
+            indices = numpy.arange(X.shape[0])
+            indices, indices_v = sklearn.cross_validation.train_test_split(
+                                    indices,
+                                    test_size=self.valid_size,
+                                    random_state=self.random_state)
+            X_v = X[indices_v]
+            y_v = y[indices_v]
+
+            X = X[indices]
+            y = y[indices]
+            w = w[indices]
+
             self.valid_set = X_v, y_v
 
         if self.valid_set and self.is_convolution():
@@ -263,7 +271,7 @@ class MultiLayerPerceptronBackend(BaseBackend):
             params.extend(mlp_layer.get_params())
 
         self.trainer, self.validator = self._create_mlp_trainer(params)
-        return X, y
+        return X, y, w
 
     def _predict_impl(self, X):
         if self.is_convolution():

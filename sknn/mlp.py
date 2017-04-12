@@ -210,7 +210,7 @@ class MultiLayerPerceptron(NeuralNetwork, sklearn.base.BaseEstimator):
         X, y = self._reshape(X, y)
 
         if not self.is_initialized:
-            X, y = self._initialize(X, y, w)
+            X, y, w = self._initialize(X, y, w)
 
         log.info("Training on dataset of {:,} samples with {} total size.".format(data_shape[0], data_size))
         if data_shape[1:] != X.shape[1:]:
