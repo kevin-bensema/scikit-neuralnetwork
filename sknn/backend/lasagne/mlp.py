@@ -256,7 +256,8 @@ class MultiLayerPerceptronBackend(BaseBackend):
 
             X = X[indices]
             y = y[indices]
-            w = w[indices]
+            if w is not None:
+                w = w[indices]
 
             self.valid_set = X_v, y_v
 
